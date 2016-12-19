@@ -1,0 +1,43 @@
+trace {
+    major = 1;
+    minor = 8;
+    byte_order = le;
+    packet.header := struct {
+        uint32_t magic;
+        uint32_t stream_id;
+    };
+};
+
+clock {
+    name = my_clock;
+    freq = 1000;
+    offset_s = 1421703448;
+};
+
+typealias integer {
+    size = 32;
+    map = clock.my_clock.value;
+} := my_clock_int_t;
+
+stream {
+    id = 0;
+    event.header := struct {
+        uint32_t id;
+        my_clock_int_t timestamp;
+        uint16_t length;
+    };
+};
+
+event {
+    id = 0;
+    name = "my_event";
+    stream_id = 0;
+    context := struct {
+        uint32_t len;
+        uint8_t bytes[length];
+    };
+    fields := struct {
+        uint8_t bytes[len];
+        uint8_t bytes2[length];
+    };
+};
