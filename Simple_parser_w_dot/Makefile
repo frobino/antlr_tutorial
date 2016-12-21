@@ -17,4 +17,4 @@ veryclean:
 	rm *.class *.dot *.pdf
 
 generate:
-	java -cp antlr-3.5.2-complete.jar org.antlr.Tool CTFLexer.g CTFParser.g
+	java -cp antlr-3.5.2-complete.jar org.antlr.Tool Exp.g 
