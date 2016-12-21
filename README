@@ -1,3 +1,17 @@
-java -cp antlr-3.5.2-complete.jar org.antlr.Tool CTFLexer.g CTFParser.g 
+REQUIRED in each folder:
+	antlr-3.5.2-complete.jar 
 
-javac -cp .:antlr-3.2.jar ANTLRDemo.java
+CTF_parser_w_dot:
+	Parser from Trace Compass.
+	Used to interpret and save in a tree the metadata TSDL files.
+	Can generate dot file with tree
+
+Simple_parser_wo_dot:
+	Simple parser from http://stackoverflow.com/questions/1931307/antlr-is-there-a-simple-example
+	Due to the fact it "returns" in the grammar, it looks like we cannot create Tree and return as dot file
+
+Simple_parser_w_dot:
+	Simple parser from http://stackoverflow.com/questions/2856612/visualizing-an-ast-created-with-antlr-in-a-net-environment
+	Due to the fact it does not "returns" in the grammar, we can create Tree and return as dot file
+
+
