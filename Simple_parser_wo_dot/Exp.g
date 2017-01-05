@@ -1,6 +1,11 @@
 grammar Exp;
 
+/*
+ * PARSER RULES (start with lowercase letter)
+ */
+
 /* This will be the entry point of our parser. */
+/* NOTE: this is also the method name called in ANTRLDemo.java to start the parsing (parser.eval())*/
 eval returns [double value]
     :    exp=additionExp {$value = $exp.value;}
     ;
@@ -28,6 +33,10 @@ atomExp returns [double value]
     :    n=Number                {$value = Double.parseDouble($n.text);}
     |    '(' exp=additionExp ')' {$value = $exp.value;}
     ;
+
+/*
+ * LEXER RULES (start with CAPITAL letter)
+ */
 
 /* A number: can be an integer value, or a decimal value */
 Number
