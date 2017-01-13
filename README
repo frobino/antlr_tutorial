@@ -1,5 +1,12 @@
 REQUIRED in each folder:
-	antlr-3.5.2-complete.jar 
+	antlr-3.5.2-complete.jar
+
+HOWTO:
+	make generate
+	make
+	make run
+	make show
+	make (very)clean
 
 CTF_parser_w_dot:
 	Parser from Trace Compass.
