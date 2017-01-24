@@ -24,7 +24,7 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
 
-      FileReader fr = new FileReader("/home/a502038/Workspaces/workspace_java/xml2/src/SrsActivator.dive");
+      FileReader fr = new FileReader("web.xml");
       BufferedReader br = new BufferedReader(fr);
       String input = "";
       String sCurrentLine;
