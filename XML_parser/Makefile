@@ -3,6 +3,7 @@
 curr_dir = $(shell pwd)
 full_dir = $(foreach dir,$(curr_dir),".:$(dir)/antlr-4.6-complete.jar")
 grammarName = XML
+grammarMethod = document
 inFile = web.xml
 
 wget:
@@ -20,7 +21,7 @@ setupenv:
 	export CLASSPATH=${full_dir}
 	#setenv CLASSPATH ${full_dir}
 show:
-	java -cp .:antlr-4.6-complete.jar org.antlr.v4.gui.TestRig ${grammarName} file -token ${inFile} -gui
+	java -cp .:antlr-4.6-complete.jar org.antlr.v4.gui.TestRig ${grammarName} ${grammarMethod} -token ${inFile} -gui
 
 clean:
-	rm *.java *.class *.tokens
+	rm ${grammarName}*.java *.class *.tokens
