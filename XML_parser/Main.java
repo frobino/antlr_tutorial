@@ -47,7 +47,9 @@ public class Main {
       XMLParser.DocumentContext documentContext = parser.document();
       
       // TODO: check the following block
-      // Walk it and attach our listener (NOTE: needed?)
+      // Walk it and attach our listener 
+      // (NOTE: taken from http://www.theendian.com/blog/antlr-4-lexer-parser-and-listener-with-example-grammar/,
+      //  requires a new class extending XMLParserBaseListener and overriding some methods.)
       ParseTreeWalker walker = new ParseTreeWalker();
       XMLParserListener listener = new XMLParserBaseListener();
       walker.walk(listener, documentContext);
