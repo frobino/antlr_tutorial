@@ -2,8 +2,8 @@
 
 curr_dir = $(shell pwd)
 full_dir = $(foreach dir,$(curr_dir),".:$(dir)/antlr-4.6-complete.jar")
-grammarName = XML
-inFile = web.xml
+grammarName = ModeTags
+inFile = test.xml
 
 wget:
 	wget http://www.antlr.org/download/antlr-4.6-complete.jar

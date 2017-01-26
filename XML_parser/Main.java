@@ -60,14 +60,15 @@ public class Main {
       JFrame frame = new JFrame("Antlr AST");
       JPanel panel = new JPanel();
       TreeViewer viewr = new TreeViewer(Arrays.asList(parser.getRuleNames()),documentContext);
-      viewr.setScale(0.5);//scale a little
+      viewr.setScale(1.5);//scale a little
       panel.add(viewr);
-      frame.add(panel);
+      frame.getContentPane().add(new JScrollPane(panel));
+      //frame.add(panel);
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       frame.setSize(800,800);
       frame.setVisible(true);
       
-      // Show AST in GUI #2, source http://stackoverflow.com/questions/34832518/antlr4-dotgenerator-example
+      // Show AST in GUI #2 [not yet stable], source http://stackoverflow.com/questions/34832518/antlr4-dotgenerator-example
       JPanel panel2 = new JPanel();
 	  TreeViewer viewr2 = new TreeViewer(Arrays.asList(parser.getRuleNames()),documentContext);
       viewr2.setScale(1);
@@ -86,7 +87,7 @@ public class Main {
       // In Antlr4 there is a new DOTGenerator class that should be used in these cases, but we have not found examples how to use it
       // http://www.antlr.org/api/JavaTool/org/antlr/v4/tool/DOTGenerator.html
       
-      // Show AST GUI #4:
+      // Show AST GUI #4 [not yet stable]:
 	  TreeViewer viewr3 = new TreeViewer(Arrays.asList(parser.getRuleNames()),documentContext);
       ImagePanel2 imagePanel2 = new ImagePanel2(viewr3);
       ImageZoom zoom = new ImageZoom(imagePanel2);
@@ -94,6 +95,7 @@ public class Main {
       JFrame f = new JFrame();
       f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       f.getContentPane().add(zoom.getUIPanel(), "North");
+      // TDB: here we should use "imagePanel2" as param instead for "panel"
       f.getContentPane().add(new JScrollPane(panel));
       f.setSize(400,400);
       f.setLocation(200,200);
