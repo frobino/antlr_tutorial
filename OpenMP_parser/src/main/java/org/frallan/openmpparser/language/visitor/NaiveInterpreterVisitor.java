@@ -4,172 +4,621 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.frallan.openmpparser.language.XMLParserVisitor;
-import org.frallan.openmpparser.language.XMLParser.AttributeContext;
-import org.frallan.openmpparser.language.XMLParser.ChardataContext;
-import org.frallan.openmpparser.language.XMLParser.ContentContext;
-import org.frallan.openmpparser.language.XMLParser.DocumentContext;
-import org.frallan.openmpparser.language.XMLParser.ElementContext;
-import org.frallan.openmpparser.language.XMLParser.MiscContext;
-import org.frallan.openmpparser.language.XMLParser.PrologContext;
-import org.frallan.openmpparser.language.XMLParser.ReferenceContext;
+import org.frallan.openmpparser.language.CParser.AbstractDeclaratorContext;
+import org.frallan.openmpparser.language.CParser.AdditiveExpressionContext;
+import org.frallan.openmpparser.language.CParser.AlignmentSpecifierContext;
+import org.frallan.openmpparser.language.CParser.AndExpressionContext;
+import org.frallan.openmpparser.language.CParser.ArgumentExpressionListContext;
+import org.frallan.openmpparser.language.CParser.AssignmentExpressionContext;
+import org.frallan.openmpparser.language.CParser.AssignmentOperatorContext;
+import org.frallan.openmpparser.language.CParser.AtomicTypeSpecifierContext;
+import org.frallan.openmpparser.language.CParser.BlockItemContext;
+import org.frallan.openmpparser.language.CParser.BlockItemListContext;
+import org.frallan.openmpparser.language.CParser.CastExpressionContext;
+import org.frallan.openmpparser.language.CParser.CompilationUnitContext;
+import org.frallan.openmpparser.language.CParser.CompoundStatementContext;
+import org.frallan.openmpparser.language.CParser.ConditionalExpressionContext;
+import org.frallan.openmpparser.language.CParser.ConstantExpressionContext;
+import org.frallan.openmpparser.language.CParser.DeclarationContext;
+import org.frallan.openmpparser.language.CParser.DeclarationListContext;
+import org.frallan.openmpparser.language.CParser.DeclarationSpecifierContext;
+import org.frallan.openmpparser.language.CParser.DeclarationSpecifiers2Context;
+import org.frallan.openmpparser.language.CParser.DeclarationSpecifiersContext;
+import org.frallan.openmpparser.language.CParser.DeclaratorContext;
+import org.frallan.openmpparser.language.CParser.DesignationContext;
+import org.frallan.openmpparser.language.CParser.DesignatorContext;
+import org.frallan.openmpparser.language.CParser.DesignatorListContext;
+import org.frallan.openmpparser.language.CParser.DirectAbstractDeclaratorContext;
+import org.frallan.openmpparser.language.CParser.DirectDeclaratorContext;
+import org.frallan.openmpparser.language.CParser.EnumSpecifierContext;
+import org.frallan.openmpparser.language.CParser.EnumerationConstantContext;
+import org.frallan.openmpparser.language.CParser.EnumeratorContext;
+import org.frallan.openmpparser.language.CParser.EnumeratorListContext;
+import org.frallan.openmpparser.language.CParser.EqualityExpressionContext;
+import org.frallan.openmpparser.language.CParser.ExclusiveOrExpressionContext;
+import org.frallan.openmpparser.language.CParser.ExpressionContext;
+import org.frallan.openmpparser.language.CParser.ExpressionStatementContext;
+import org.frallan.openmpparser.language.CParser.ExternalDeclarationContext;
+import org.frallan.openmpparser.language.CParser.FunctionDefinitionContext;
+import org.frallan.openmpparser.language.CParser.FunctionSpecifierContext;
+import org.frallan.openmpparser.language.CParser.GccAttributeContext;
+import org.frallan.openmpparser.language.CParser.GccAttributeListContext;
+import org.frallan.openmpparser.language.CParser.GccAttributeSpecifierContext;
+import org.frallan.openmpparser.language.CParser.GccDeclaratorExtensionContext;
+import org.frallan.openmpparser.language.CParser.GenericAssocListContext;
+import org.frallan.openmpparser.language.CParser.GenericAssociationContext;
+import org.frallan.openmpparser.language.CParser.GenericSelectionContext;
+import org.frallan.openmpparser.language.CParser.IdentifierListContext;
+import org.frallan.openmpparser.language.CParser.InclusiveOrExpressionContext;
+import org.frallan.openmpparser.language.CParser.InitDeclaratorContext;
+import org.frallan.openmpparser.language.CParser.InitDeclaratorListContext;
+import org.frallan.openmpparser.language.CParser.InitializerContext;
+import org.frallan.openmpparser.language.CParser.InitializerListContext;
+import org.frallan.openmpparser.language.CParser.IterationStatementContext;
+import org.frallan.openmpparser.language.CParser.JumpStatementContext;
+import org.frallan.openmpparser.language.CParser.LabeledStatementContext;
+import org.frallan.openmpparser.language.CParser.LogicalAndExpressionContext;
+import org.frallan.openmpparser.language.CParser.LogicalOrExpressionContext;
+import org.frallan.openmpparser.language.CParser.MultiplicativeExpressionContext;
+import org.frallan.openmpparser.language.CParser.NestedParenthesesBlockContext;
+import org.frallan.openmpparser.language.CParser.ParameterDeclarationContext;
+import org.frallan.openmpparser.language.CParser.ParameterListContext;
+import org.frallan.openmpparser.language.CParser.ParameterTypeListContext;
+import org.frallan.openmpparser.language.CParser.PointerContext;
+import org.frallan.openmpparser.language.CParser.PostfixExpressionContext;
+import org.frallan.openmpparser.language.CParser.PrimaryExpressionContext;
+import org.frallan.openmpparser.language.CParser.RelationalExpressionContext;
+import org.frallan.openmpparser.language.CParser.SelectionStatementContext;
+import org.frallan.openmpparser.language.CParser.ShiftExpressionContext;
+import org.frallan.openmpparser.language.CParser.SpecifierQualifierListContext;
+import org.frallan.openmpparser.language.CParser.StatementContext;
+import org.frallan.openmpparser.language.CParser.StaticAssertDeclarationContext;
+import org.frallan.openmpparser.language.CParser.StorageClassSpecifierContext;
+import org.frallan.openmpparser.language.CParser.StructDeclarationContext;
+import org.frallan.openmpparser.language.CParser.StructDeclarationListContext;
+import org.frallan.openmpparser.language.CParser.StructDeclaratorContext;
+import org.frallan.openmpparser.language.CParser.StructDeclaratorListContext;
+import org.frallan.openmpparser.language.CParser.StructOrUnionContext;
+import org.frallan.openmpparser.language.CParser.StructOrUnionSpecifierContext;
+import org.frallan.openmpparser.language.CParser.TranslationUnitContext;
+import org.frallan.openmpparser.language.CParser.TypeNameContext;
+import org.frallan.openmpparser.language.CParser.TypeQualifierContext;
+import org.frallan.openmpparser.language.CParser.TypeQualifierListContext;
+import org.frallan.openmpparser.language.CParser.TypeSpecifierContext;
+import org.frallan.openmpparser.language.CParser.TypedefNameContext;
+import org.frallan.openmpparser.language.CParser.UnaryExpressionContext;
+import org.frallan.openmpparser.language.CParser.UnaryOperatorContext;
+import org.frallan.openmpparser.language.CVisitor;
 
-public class NaiveInterpreterVisitor implements XMLParserVisitor<String>{
+public class NaiveInterpreterVisitor implements CVisitor<String>{
 
-	// TODO: many methods return null, so the test will pass...
-	//		 To be fixed with a better solution
+	@Override
+	public String visit(ParseTree tree) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitChildren(RuleNode node) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitTerminal(TerminalNode node) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitErrorNode(ErrorNode node) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitPrimaryExpression(PrimaryExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitGenericSelection(GenericSelectionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitGenericAssocList(GenericAssocListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitGenericAssociation(GenericAssociationContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitPostfixExpression(PostfixExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitArgumentExpressionList(ArgumentExpressionListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitUnaryExpression(UnaryExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitUnaryOperator(UnaryOperatorContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitCastExpression(CastExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitMultiplicativeExpression(MultiplicativeExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitAdditiveExpression(AdditiveExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitShiftExpression(ShiftExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitRelationalExpression(RelationalExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitEqualityExpression(EqualityExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitAndExpression(AndExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitExclusiveOrExpression(ExclusiveOrExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitInclusiveOrExpression(InclusiveOrExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitLogicalAndExpression(LogicalAndExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitLogicalOrExpression(LogicalOrExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitConditionalExpression(ConditionalExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitAssignmentExpression(AssignmentExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitAssignmentOperator(AssignmentOperatorContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitExpression(ExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitConstantExpression(ConstantExpressionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitDeclaration(DeclarationContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitDeclarationSpecifiers(DeclarationSpecifiersContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitDeclarationSpecifiers2(DeclarationSpecifiers2Context ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitDeclarationSpecifier(DeclarationSpecifierContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitInitDeclaratorList(InitDeclaratorListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitInitDeclarator(InitDeclaratorContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitStorageClassSpecifier(StorageClassSpecifierContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitTypeSpecifier(TypeSpecifierContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitStructOrUnionSpecifier(StructOrUnionSpecifierContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitStructOrUnion(StructOrUnionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitStructDeclarationList(StructDeclarationListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitStructDeclaration(StructDeclarationContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitSpecifierQualifierList(SpecifierQualifierListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitStructDeclaratorList(StructDeclaratorListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitStructDeclarator(StructDeclaratorContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitEnumSpecifier(EnumSpecifierContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitEnumeratorList(EnumeratorListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitEnumerator(EnumeratorContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitEnumerationConstant(EnumerationConstantContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitAtomicTypeSpecifier(AtomicTypeSpecifierContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitTypeQualifier(TypeQualifierContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitFunctionSpecifier(FunctionSpecifierContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitAlignmentSpecifier(AlignmentSpecifierContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitDeclarator(DeclaratorContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitDirectDeclarator(DirectDeclaratorContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitGccDeclaratorExtension(GccDeclaratorExtensionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitGccAttributeSpecifier(GccAttributeSpecifierContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitGccAttributeList(GccAttributeListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitGccAttribute(GccAttributeContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitNestedParenthesesBlock(NestedParenthesesBlockContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitPointer(PointerContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitTypeQualifierList(TypeQualifierListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitParameterTypeList(ParameterTypeListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitParameterList(ParameterListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitParameterDeclaration(ParameterDeclarationContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitIdentifierList(IdentifierListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitTypeName(TypeNameContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitAbstractDeclarator(AbstractDeclaratorContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitDirectAbstractDeclarator(DirectAbstractDeclaratorContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitTypedefName(TypedefNameContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitInitializer(InitializerContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitInitializerList(InitializerListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitDesignation(DesignationContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitDesignatorList(DesignatorListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitDesignator(DesignatorContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitStaticAssertDeclaration(StaticAssertDeclarationContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitStatement(StatementContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitLabeledStatement(LabeledStatementContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitCompoundStatement(CompoundStatementContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitBlockItemList(BlockItemListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitBlockItem(BlockItemContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitExpressionStatement(ExpressionStatementContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitSelectionStatement(SelectionStatementContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitIterationStatement(IterationStatementContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitJumpStatement(JumpStatementContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitCompilationUnit(CompilationUnitContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitTranslationUnit(TranslationUnitContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitExternalDeclaration(ExternalDeclarationContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitFunctionDefinition(FunctionDefinitionContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String visitDeclarationList(DeclarationListContext ctx) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
-	// efroroo: above here the reference examples includes 
-	// 			other methods and private classes
-	
-	// Document -> element
-	// 			-> content -> element
-	//			-> content -> element (-> attribute "BeginAtLabel")
-	//			-> content -> browse all elements
-	
-	@Override
-	public String visit(ParseTree arg0) {
-		return arg0.accept(this);
-	}
-
-	@Override
-	public String visitDocument(DocumentContext ctx) {
-		// TODO Main parse rule 
-		//      ctx."prolog", "misc" or "element"?
-		//
-		// We are interested in visiting the element only!
-		
-		return ctx.element().accept(this);
-		// return null;
-	}
-	
-	@Override
-	public String visitElement(ElementContext ctx) {
-		// TODO: with the current impl we reach here from 
-		//		 visitDocument
-		
-		boolean foundBegin = false;
-		
-		// An Element can contain many Attributes, but only one Content
-		for (AttributeContext s : ctx.attribute() ) {
-			
-			// Read the Attribute name (index 0) of the Element
-			String elementUnderAttr = s.getChild(0).getText();
-			System.out.println("ELEMENT list under-Attribute: " + elementUnderAttr);
-			
-			if (elementUnderAttr.equals("beginAtLabel")){
-				
-				System.out.println("FOUND: found under-Attribute beginAtLabel");
-				foundBegin = true;
-				
-				// TODO: horrific break, change.
-				// Once the beginAtLabel is found, we break the for loop
-				break;
-			}
-			
-			// TODO: remove this later on, otherwise we jump to attribute
-			// s.accept(this);
-		}
-		
-		// If we did not find a "beginAtLabel", we want to visit the following content
-		if (foundBegin == false){
-			// DANGER: not all elements have a context! 
-			// So we first check that a context exists, 
-			// in that case we continue accepting the content.
-			if (ctx.content() != null){
-				ctx.content().accept(this);
-			}
-		} else {
-			// TODO: here we enter only after the break... is it safe?
-			// Here we enter only of we have found the beginAtLabel
-			// -> content -> browse all elements
-			for (ElementContext s : ctx.content().element() ) {
-				
-				// Print out the attribute
-				System.out.println("AFTER FOUND: element sub-attribute " + s.attribute(0).getChild(2).getText());
-				
-			}
-		}
-		
-		// return ctx.attribute(0).accept(this);
-		return null;
-	}
-
-	@Override
-	public String visitContent(ContentContext ctx) {
-		// TODO With the current impl we reach here from visitElement
-		
-		System.out.println("CONTENT: I'm in");
-		
-		// A Content can contain many Elements
-		// TODO: this loop does not return... smthing wrong
-		for (ElementContext s : ctx.element()){
-			// efroroo: not all elements have attributes! This will crash sometimes
-			// System.out.println("CONTENT: sub-elemement attr(0): " + s.attribute(0).getText());
-			s.accept(this);
-		}
-		
-		return null;
-	}	
-
-	@Override
-	public String visitAttribute(AttributeContext ctx) {
-		// TODO Auto-generated method stub
-		
-		String attributeEl0 = ctx.getChild(0).getText();
-		
-		if (attributeEl0 == "name"){
-			System.out.println("ATTRIBUTE: " + attributeEl0);
-		} else {
-			System.out.println("UNEXPECTED ATTRIBUTE: " + attributeEl0);
-		}
-		
-		return null;
-	}
-	
-	/////////////////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////////////////
-	
-	@Override
-	public String visitChildren(RuleNode arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String visitErrorNode(ErrorNode arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String visitTerminal(TerminalNode arg0) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String visitReference(ReferenceContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String visitChardata(ChardataContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String visitProlog(PrologContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String visitMisc(MiscContext ctx) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
