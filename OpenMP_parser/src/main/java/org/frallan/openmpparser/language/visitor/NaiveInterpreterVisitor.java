@@ -95,6 +95,7 @@ public class NaiveInterpreterVisitor implements CVisitor<String>{
 	@Override
 	public String visit(ParseTree tree) {
 		// TODO Auto-generated method stub
+		tree.accept(this);
 		return null;
 	}
 
@@ -550,13 +551,23 @@ public class NaiveInterpreterVisitor implements CVisitor<String>{
 
 	@Override
 	public String visitCompoundStatement(CompoundStatementContext ctx) {
-		// TODO Auto-generated method stub
+		// goto blockItemList
+		System.out.println("5");
+		ctx.blockItemList().accept(this);
 		return null;
 	}
 
 	@Override
 	public String visitBlockItemList(BlockItemListContext ctx) {
-		// TODO Auto-generated method stub
+		// 
+		System.out.println("6");
+		/*
+		if (ctx.blockItem().statement().compoundStatement().isEmpty()){
+			System.out.println("Found omp");
+		} else {
+			System.out.println("NOT found omp");
+		}
+		*/
 		return null;
 	}
 
@@ -592,25 +603,33 @@ public class NaiveInterpreterVisitor implements CVisitor<String>{
 
 	@Override
 	public String visitCompilationUnit(CompilationUnitContext ctx) {
-		// TODO Auto-generated method stub
+		// go to translationUnit
+		System.out.println("1");
+		ctx.translationUnit().accept(this);
 		return null;
 	}
 
 	@Override
 	public String visitTranslationUnit(TranslationUnitContext ctx) {
-		// TODO Auto-generated method stub
+		// goto externalDeclaration
+		System.out.println("2");
+		ctx.externalDeclaration().accept(this);
 		return null;
 	}
 
 	@Override
 	public String visitExternalDeclaration(ExternalDeclarationContext ctx) {
-		// TODO Auto-generated method stub
+		// goto functionDefinition (main)
+		System.out.println("3");
+		ctx.functionDefinition().accept(this);
 		return null;
 	}
 
 	@Override
 	public String visitFunctionDefinition(FunctionDefinitionContext ctx) {
-		// TODO Auto-generated method stub
+		// goto compoundStatement - {...}
+		System.out.println("4");
+		ctx.compoundStatement().accept(this);
 		return null;
 	}
 
@@ -619,6 +638,5 @@ public class NaiveInterpreterVisitor implements CVisitor<String>{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	
 }

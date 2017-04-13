@@ -2,25 +2,52 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void printEnd();
+void printStart();
+
 int main (int argc, char *argv[])
 {
-	int nthreads, tid;
+  int nthreads, tid;
+  
+  {
+    printf("Testing compound non omp :)\n");
+  }
 
-	/* Fork a team of threads giving them their own copies of variables */
-    #pragma omp parallel private(nthreads, tid)
-	{
+  printStart();
 
-		/* Obtain thread number */
-		tid = omp_get_thread_num();
-		printf("Hello World from thread = %d\n", tid);
+  /* Fork a team of threads giving them their own copies of variables */
+  #pragma omp parallel private(nthreads, tid)
+  {
 
-		/* Only master thread does this */
-		if (tid == 0)
-		{
-			nthreads = omp_get_num_threads();
-			printf("Number of threads = %d\n", nthreads);
-		}
+    /* Obtain thread number */
+    tid = omp_get_thread_num();
+    printf("Hello World from thread = %d\n", tid);
 
-	}  /* All threads join master thread and disband */
+    /* Only master thread does this */
+    if (tid == 0)
+    {
+      nthreads = omp_get_num_threads();
+      printf("Number of threads = %d\n", nthreads);
+    }
 
+  }  /* All threads join master thread and disband */
+
+  {
+    printf("Testing compound non omp :)\n");
+  }
+  
+  printEnd();
+  
+}
+
+void printEnd()
+{
+  printf("Done!\n");
+  return;
+}
+
+void printStart()
+{
+  printf("Start test\n");
+  return;
 }

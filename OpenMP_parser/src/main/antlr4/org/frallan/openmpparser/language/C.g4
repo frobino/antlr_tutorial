@@ -463,7 +463,7 @@ labeledStatement
     ;
 
 compoundStatement
-    :   '{' blockItemList? '}'
+    :   OmpPragmaDirective? '{' blockItemList? '}'
     ;
 
 blockItemList
@@ -896,6 +896,10 @@ LineAfterPreprocessing
 LineDirective
     :   '#' Whitespace? DecimalConstant Whitespace? StringLiteral ~[\r\n]*
         -> skip
+    ;
+
+OmpPragmaDirective
+    :   '#' Whitespace? 'pragma' Whitespace 'omp' Whitespace ~[\r\n]*
     ;
 
 PragmaDirective
