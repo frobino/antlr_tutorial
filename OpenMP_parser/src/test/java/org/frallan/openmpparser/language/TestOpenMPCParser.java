@@ -19,8 +19,10 @@ import org.antlr.v4.runtime.TokenSource;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.Parser;
 import org.frallan.openmpparser.language.CParser.CompilationUnitContext;
+import org.frallan.openmpparser.language.listener.NaiveInterpreterListener;
 import org.frallan.openmpparser.language.visitor.NaiveInterpreterVisitor;
 import org.junit.Test;
 
@@ -40,6 +42,11 @@ public class TestOpenMPCParser {
 		NaiveInterpreterVisitor visitor = new NaiveInterpreterVisitor();
 		OpenMPCTestErrorListener errorListener = new OpenMPCTestErrorListener();
 		CompilationUnitContext context = parseProgram(program, errorListener);
+		
+		/*
+		 * Test VISITOR
+		 */
+		
 		// Temporarily removed the following assert.
 		// The original ANTLR C grammar is not flawless and returns some errors,
 		// however it parses correctly.
@@ -53,6 +60,16 @@ public class TestOpenMPCParser {
 		System.out.println("secondResult: " + secondResult);
 		assertTrue("Default success", Boolean.TRUE);
 		
+		/*
+		 * Test LISTENER
+		 */
+
+		// Walk it and attach our listener
+		ParseTreeWalker walker = new ParseTreeWalker();
+		NaiveInterpreterListener listener = new NaiveInterpreterListener();
+		walker.walk(listener, context);
+		assertTrue("Default success", Boolean.TRUE);
+
 	}
 
 	// Helpers, generic for all antlr4 unitest 
