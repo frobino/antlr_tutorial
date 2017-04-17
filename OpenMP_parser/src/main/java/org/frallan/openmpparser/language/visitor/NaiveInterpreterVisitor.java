@@ -90,13 +90,13 @@ import org.frallan.openmpparser.language.CParser.UnaryExpressionContext;
 import org.frallan.openmpparser.language.CParser.UnaryOperatorContext;
 import org.frallan.openmpparser.language.CVisitor;
 
-public class NaiveInterpreterVisitor implements CVisitor<String>{
+public class NaiveInterpreterVisitor implements CVisitor<String> {
 
 	@Override
 	public String visit(ParseTree tree) {
-		// TODO Auto-generated method stub
-		tree.accept(this);
-		return null;
+		String returnedString = "";
+		returnedString = returnedString + tree.accept(this);
+		return returnedString;
 	}
 
 	@Override
@@ -553,22 +553,64 @@ public class NaiveInterpreterVisitor implements CVisitor<String>{
 	public String visitCompoundStatement(CompoundStatementContext ctx) {
 		// goto blockItemList
 		System.out.println("5");
-		ctx.blockItemList().accept(this);
-		return null;
+		String returnedString = "";
+		returnedString = returnedString + ctx.blockItemList().accept(this);
+		return returnedString;
 	}
 
 	@Override
 	public String visitBlockItemList(BlockItemListContext ctx) {
-		// 
+		// We are in here when we are analyzing the BlockItemList of the main
+		// function
 		System.out.println("6");
-		/*
-		if (ctx.blockItem().statement().compoundStatement().isEmpty()){
-			System.out.println("Found omp");
-		} else {
-			System.out.println("NOT found omp");
+		String returnedString = "";
+		// DEBUG:
+		// System.out.println("BlockItemList: " + ctx.getText());
+
+		// analyze only blockitem statements (not declarations),
+		// and differ them between function calls, OpenMP compoundstatements,
+		// non-Openmp compoundstatements
+		if (ctx.blockItem().statement() != null) {
+
+			// if this is not null we found a function call:
+			if (ctx.blockItem().statement().expressionStatement() != null) {
+				System.out.println(
+						"Identified function call: " + ctx.blockItem().statement().expressionStatement().getText());
+				returnedString = ctx.blockItem().statement().expressionStatement().getText() + ";";
+				// continue exploring if possible
+				if (ctx.blockItemList() != null) {
+					returnedString = returnedString + ctx.blockItemList().accept(this);
+				}
+
+			}
+
+			// if this is not null we found a compound statement:
+			if (ctx.blockItem().statement().compoundStatement() != null) {
+
+				// check if compound statement is openmp or not
+				if (ctx.blockItem().statement().compoundStatement().getChild(0).getText().contains("omp")) {
+					System.out.println("Identified OMP compoundstatement");
+					returnedString = "OMP;";
+					// continue exploring if possible
+					if (ctx.blockItemList() != null) {
+						returnedString = returnedString + ctx.blockItemList().accept(this);
+					}
+
+				} else {
+					System.out.println("Identified NON-OMP compoundstatement");
+					returnedString = "NON-OMP;";
+					// continue exploring if possible
+					if (ctx.blockItemList() != null) {
+						returnedString = returnedString + ctx.blockItemList().accept(this);
+					}
+
+				}
+
+			}
+
 		}
-		*/
-		return null;
+
+		return returnedString;
 	}
 
 	@Override
@@ -605,32 +647,44 @@ public class NaiveInterpreterVisitor implements CVisitor<String>{
 	public String visitCompilationUnit(CompilationUnitContext ctx) {
 		// go to translationUnit
 		System.out.println("1");
-		ctx.translationUnit().accept(this);
-		return null;
+		String returnedString = "";
+		returnedString = returnedString + ctx.translationUnit().accept(this);
+		return returnedString;
 	}
 
 	@Override
 	public String visitTranslationUnit(TranslationUnitContext ctx) {
 		// goto externalDeclaration
 		System.out.println("2");
-		ctx.externalDeclaration().accept(this);
-		return null;
+		String returnedString = "";
+
+		// Search for the main function, and go on exploring only that
+		if (ctx.externalDeclaration().functionDefinition().declarator().directDeclarator().directDeclarator().getText()
+				.equals("main")) {
+			returnedString = returnedString + ctx.externalDeclaration().accept(this);
+		} else {
+			returnedString = returnedString + ctx.translationUnit().accept(this);
+		}
+
+		return returnedString;
 	}
 
 	@Override
 	public String visitExternalDeclaration(ExternalDeclarationContext ctx) {
 		// goto functionDefinition (main)
 		System.out.println("3");
-		ctx.functionDefinition().accept(this);
-		return null;
+		String returnedString = "";
+		returnedString = returnedString + ctx.functionDefinition().accept(this);
+		return returnedString;
 	}
 
 	@Override
 	public String visitFunctionDefinition(FunctionDefinitionContext ctx) {
 		// goto compoundStatement - {...}
 		System.out.println("4");
-		ctx.compoundStatement().accept(this);
-		return null;
+		String returnedString = "";
+		returnedString = returnedString + ctx.compoundStatement().accept(this);
+		return returnedString;
 	}
 
 	@Override
@@ -638,5 +692,5 @@ public class NaiveInterpreterVisitor implements CVisitor<String>{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 }

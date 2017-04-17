@@ -1,6 +1,6 @@
 package org.frallan.openmpparser.language;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -58,7 +58,8 @@ public class TestOpenMPCParser {
 		// assertEquals(result, secondResult);
 		System.out.println("result: " + result);
 		System.out.println("secondResult: " + secondResult);
-		assertTrue("Default success", Boolean.TRUE);
+		assertEquals("printEnd();;NON-OMP;OMP;printStart();;NON-OMP;", result);
+		assertEquals("printEnd();;NON-OMP;OMP;printStart();;NON-OMP;", secondResult);
 		
 		/*
 		 * Test LISTENER
