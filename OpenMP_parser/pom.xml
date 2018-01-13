@@ -34,6 +34,18 @@
       <groupId>org.antlr</groupId>
       <artifactId>antlr4-maven-plugin</artifactId>
       <version>${antlr4.plugin.version}</version>
+      <!-- Due to conflicts with newer guava lib -->
+      <exclusions>
+	    <exclusion>
+	      <groupId>org.sonatype.sisu</groupId>
+	      <artifactId>sisu-guava</artifactId>
+	    </exclusion>
+	  </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>23.6-jre</version>
     </dependency>
   </dependencies>
   
