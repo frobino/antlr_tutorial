@@ -90,7 +90,14 @@ import org.frallan.openmpparser.language.CParser.UnaryExpressionContext;
 import org.frallan.openmpparser.language.CParser.UnaryOperatorContext;
 import org.frallan.openmpparser.language.CVisitor;
 
+import com.google.common.graph.GraphBuilder;
+import com.google.common.graph.MutableGraph;
+
 public class NaiveInterpreterVisitor implements CVisitor<String> {
+
+	private MutableGraph<String> fGraph = GraphBuilder.directed().build();
+	private String fLastVisitedNode;
+	private int fNonOmpCompoundNr = 0;
 
 	@Override
 	public String visit(ParseTree tree) {
@@ -574,9 +581,18 @@ public class NaiveInterpreterVisitor implements CVisitor<String> {
 
 			// if this is not null we found a function call:
 			if (ctx.blockItem().statement().expressionStatement() != null) {
-				System.out.println(
-						"Identified function call: " + ctx.blockItem().statement().expressionStatement().getText());
-				returnedString = ctx.blockItem().statement().expressionStatement().getText() + ";";
+				String node = ctx.blockItem().statement().expressionStatement().getText();
+
+				fGraph.addNode(node);
+				if (fLastVisitedNode != null) {
+					fGraph.putEdge(fLastVisitedNode, node);
+				}
+				fLastVisitedNode = node;
+				System.out.println("GRAPH: " + fGraph);
+
+				System.out.println("Identified function call: " + node);
+				returnedString = node + ";";
+
 				// continue exploring if possible
 				if (ctx.blockItemList() != null) {
 					returnedString = returnedString + ctx.blockItemList().accept(this);
@@ -588,8 +604,22 @@ public class NaiveInterpreterVisitor implements CVisitor<String> {
 			if (ctx.blockItem().statement().compoundStatement() != null) {
 
 				// check if compound statement is openmp or not
-				if (ctx.blockItem().statement().compoundStatement().getChild(0).getText().contains("omp")) {
-					System.out.println("Identified OMP compoundstatement");
+				// from the current grammar, the only case whrn we have 4
+				// children is with a omp pragma
+				if (ctx.blockItem().statement().compoundStatement().getChildCount() > 3) {
+
+					String ompPragma = ctx.blockItem().statement().compoundStatement().getChild(0).getText();
+					// TODO: do something with the graph depending on the kind
+					// of pragma
+					String node = ompPragma + " OMP compound";
+					fGraph.addNode(node);
+					if (fLastVisitedNode != null) {
+						fGraph.putEdge(fLastVisitedNode, node);
+					}
+					fLastVisitedNode = node;
+					System.out.println("GRAPH: " + fGraph);
+
+					System.out.println("Identified OMP compoundstatement with omp pragma: " + ompPragma);
 					returnedString = "OMP;";
 					// continue exploring if possible
 					if (ctx.blockItemList() != null) {
@@ -597,6 +627,16 @@ public class NaiveInterpreterVisitor implements CVisitor<String> {
 					}
 
 				} else {
+
+					// TODO: do something better than name only
+					String node = "NON OMP compound " + fNonOmpCompoundNr++;
+					fGraph.addNode(node);
+					if (fLastVisitedNode != null) {
+						fGraph.putEdge(fLastVisitedNode, node);
+					}
+					fLastVisitedNode = node;
+					System.out.println("GRAPH: " + fGraph);
+
 					System.out.println("Identified NON-OMP compoundstatement");
 					returnedString = "NON-OMP;";
 					// continue exploring if possible
